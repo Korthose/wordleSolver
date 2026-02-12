@@ -28,6 +28,15 @@ class StatisticService
         $this->alphabet = Config::collection('alphabet_template')->toArray();
     }
 
+    public function calculateLetterSum()
+    {
+        foreach ($this->alphabet as $i => $a) {
+            $sum = array_sum($this->alphabet[$i]);
+
+            $this->alphabet[$i]['count'] = $sum;
+        }
+    }
+
     public function findCharacterPosition()
     {
         foreach ($this->words as $word) {
@@ -35,6 +44,8 @@ class StatisticService
                 $this->alphabet[$l][$i] += 1;
             }
         }
+
+        $this->calculateLetterSum();
 
         $content = '<?php'.PHP_EOL.PHP_EOL.'return '.var_export($this->alphabet, true).';';
         File::put(storage_path('alphabet.php'), $content);
