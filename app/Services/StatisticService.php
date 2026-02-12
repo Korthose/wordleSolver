@@ -28,12 +28,7 @@ class StatisticService
         $this->alphabet = Config::collection('alphabet_template')->toArray();
     }
 
-    public function findCharacterPositions()
-    {
-        //
-    }
-
-    public function createStatistic()
+    public function findCharacterPosition()
     {
         foreach ($this->words as $word) {
             foreach (str_split(implode($word)) as $i => $l) {
