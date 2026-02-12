@@ -37,6 +37,6 @@ class StatisticService
         }
 
         $content = '<?php'.PHP_EOL.PHP_EOL.'return '.var_export($this->alphabet, true).';';
-        File::put(storage_path('alphabet_template.php'), $content);
+        File::put(storage_path('alphabet.php'), $content);
     }
 }
