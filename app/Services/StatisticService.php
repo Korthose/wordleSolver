@@ -28,6 +28,23 @@ class StatisticService
         $this->alphabet = Config::collection('alphabet_template')->toArray();
     }
 
+    /*
+     * Updates the values found in storage/alphabet.php to be
+     * based on the bigger sum of all letters instead of
+     * just being counted occurrences
+    */
+    private function createPercentualValue()
+    {
+        foreach ($this->alphabet as $i => $a) {
+            $this->alphabet[$i]['count'] = round(($this->alphabet[$i]['count'] / $this->sum) * 100);
+
+            foreach ($a as $b => $c) {
+                $this->alphabet[$i][$b] = round(($c / $this->sum) * 100, 2);
+            }
+        }
+    }
+
+    // calculates the 'count' value found for each button
     public function calculateLetterSum()
     {
         foreach ($this->alphabet as $i => $a) {
@@ -36,7 +53,6 @@ class StatisticService
             $this->alphabet[$i]['count'] = $sum;
         }
     }
-
     public function findCharacterPosition()
     {
         foreach ($this->words as $word) {
@@ -46,6 +62,7 @@ class StatisticService
         }
 
         $this->calculateLetterSum();
+        $this->createPercentualValue();
 
         $content = '<?php'.PHP_EOL.PHP_EOL.'return '.var_export($this->alphabet, true).';';
         File::put(storage_path('alphabet.php'), $content);
