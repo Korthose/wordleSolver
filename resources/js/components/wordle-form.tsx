@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
+import React from 'react';
 
 const STATUS = {
     NOT_FOUND: 0,
@@ -7,9 +7,9 @@ const STATUS = {
     CORRECT: 2,
 };
 
-const WordleForm = ({ name = "REACT" }) => {
+const WordleForm = ({ name = 'REACT' }) => {
     // Ensure name is uppercase, 5 chars max, and padded with spaces if short
-    const cleanName = (name || "").toUpperCase().padEnd(5, ' ').slice(0, 5);
+    const cleanName = (name || '').toUpperCase().padEnd(5, ' ').slice(0, 5);
 
     const { data, setData, post } = useForm({
         word: cleanName,
@@ -20,7 +20,7 @@ const WordleForm = ({ name = "REACT" }) => {
     const rows = 6;
     const cols = 5;
 
-    const toggleStatus = (index) => {
+    const toggleStatus = (index: number) => {
         const currentStatus = data.statuses[index];
         // Cycle: 0 -> 1 -> 2 -> 0
         const newStatus = (currentStatus + 1) % 3;
@@ -31,7 +31,7 @@ const WordleForm = ({ name = "REACT" }) => {
         setData('statuses', newStatuses);
     };
 
-    const getColors = (status) => {
+    const getColors = (status: unknown) => {
         switch (status) {
             case STATUS.NOT_FOUND:
                 return 'bg-gray-500 border-gray-500 text-white'; // Grey
@@ -44,24 +44,28 @@ const WordleForm = ({ name = "REACT" }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         post('/submit-word');
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
-            <h1 className="text-4xl font-bold mb-8">wordleSolver</h1>
+        <form
+            onSubmit={handleSubmit}
+            className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4 text-white">
+            <h1 className="mb-8 text-4xl font-bold">wordleSolver</h1>
 
             {/* The Grid */}
-            <div className="grid grid-rows-6 gap-2 mb-8">
+            <div className="mb-8 grid grid-rows-6 gap-2">
                 {[...Array(rows)].map((_, rowIndex) => (
                     <div key={rowIndex} className="flex gap-2">
                         {[...Array(cols)].map((_, colIndex) => {
                             // Only the first row is interactive and shows the name
                             const isRowActive = rowIndex === 0;
-                            const char = isRowActive ? data.word[colIndex] : "";
-                            const status = isRowActive ? data.statuses[colIndex] : STATUS.NOT_FOUND;
+                            const char = isRowActive ? data.word[colIndex] : '';
+                            const status = isRowActive
+                                ? data.statuses[colIndex]
+                                : STATUS.NOT_FOUND;
 
                             return (
                                 <div key={colIndex} className="relative">
@@ -70,14 +74,12 @@ const WordleForm = ({ name = "REACT" }) => {
                                     */}
                                     <button
                                         type="button"
-                                        onClick={() => isRowActive && toggleStatus(colIndex)}
+                                        onClick={() =>
+                                            isRowActive &&
+                                            toggleStatus(colIndex)
+                                        }
                                         disabled={!isRowActive} // Only enable first row
-                                        className={`
-                                            w-14 h-14 border-2 flex items-center justify-center
-                                            text-3xl font-bold uppercase transition-colors duration-150
-                                            ${isRowActive ? 'cursor-pointer hover:opacity-90' : 'cursor-default bg-transparent border-gray-700'}
-                                            ${isRowActive ? getColors(status) : ''}
-                                        `}
+                                        className={`flex h-14 w-14 items-center justify-center border-2 text-3xl font-bold uppercase transition-colors duration-150 ${isRowActive ? 'cursor-pointer hover:opacity-90' : 'cursor-default border-gray-700 bg-transparent'} ${isRowActive ? getColors(status) : ''} `}
                                     >
                                         {char}
                                     </button>
@@ -110,21 +112,24 @@ const WordleForm = ({ name = "REACT" }) => {
             </div>
 
             {/* Instructions */}
-            <div className="flex gap-4 text-sm mb-6">
+            <div className="mb-6 flex gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-gray-500"></div> Not Found
+                    <div className="h-4 w-4 bg-gray-500"></div>
+                    Not Found
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-yellow-500"></div> Partial
+                    <div className="h-4 w-4 bg-yellow-500"></div>
+                    Partial
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-green-600"></div> Correct
+                    <div className="h-4 w-4 bg-green-600"></div>
+                    Correct
                 </div>
             </div>
 
             <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded shadow-lg transition"
+                className="rounded bg-blue-600 px-8 py-3 font-bold text-white shadow-lg transition hover:bg-blue-500"
             >
                 Save Wordle State
             </button>
