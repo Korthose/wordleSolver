@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -13,5 +14,8 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Submitting the letters
+Route::post('/submit-word', [WordController::class, 'store']);
 
 require __DIR__.'/settings.php';

@@ -46,13 +46,12 @@ const WordleForm = ({ name = "REACT" }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // You can post to your route here
-        post('/your-wordle-route');
+        post('/submit-word');
     };
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
-            <h1 className="text-4xl font-bold mb-8">WORDLE CONFIG</h1>
+            <h1 className="text-4xl font-bold mb-8">wordleSolver</h1>
 
             {/* The Grid */}
             <div className="grid grid-rows-6 gap-2 mb-8">
