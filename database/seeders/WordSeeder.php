@@ -8,47 +8,38 @@ use Illuminate\Support\Facades\File;
 
 class WordSeeder extends Seeder
 {
-
-    // Gets the txt file
-    private function getTxt(): string
+    /**
+     * Read and format the word list file.
+     */
+    private function getWords(): array
     {
         $path = resource_path('valid-wordle-words.txt');
 
-        return File::get($path);
-    }
+        if (!File::exists($path)) {
+            throw new \Exception("Word file not found at: {$path}");
+        }
 
-    // Formats txt file
-    private function formatTxt(): array
-    {
-        $file = $this->getTxt();
-
-        // generally use PHP_EOL for new line
-        return explode(PHP_EOL, $file);
+        return collect(File::lines($path))
+            ->map(fn ($line) => trim($line))
+            ->filter() 
+            ->unique() 
+            ->values()
+            ->toArray();
     }
 
     /**
-     * Deletes the last entry, as it most likely empty
-     * due to formatting issues with the txt fetching
+     * Run the database seeds.
      */
-    private function deleteLastEntry()
-    {
-        return DB::table('words')
-            ->orderByDesc('id')
-            ->limit(1)
-            ->delete();
-    }
-
-
-     // Run the database seeds.
     public function run(): void
     {
-        $words = $this->formatTxt();
-        foreach ($words as $word) {
-            DB::table('words')->insert([
-                'word' => $word
-            ]);
-        }
+        $words = $this->getWords();
 
-        $this->deleteLastEntry();
+        $chunks = array_chunk($words, 1000);
+
+        foreach ($chunks as $chunk) {
+            DB::table('words')->insert(
+                array_map(fn ($word) => ['word' => $word], $chunk)
+            );
+        }
     }
 }
