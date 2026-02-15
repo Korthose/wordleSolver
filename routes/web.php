@@ -16,6 +16,6 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Submitting the letters
-Route::post('/submit-word', [WordController::class, 'store']);
+//Route::get('/submit-words', [WordController::class, 'create']);
 
 require __DIR__.'/settings.php';
