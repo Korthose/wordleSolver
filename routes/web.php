@@ -11,9 +11,8 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Initial route to the main site
+Route::get('/solve-wordle', [WordController::class, 'start'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Submitting the letters
 //Route::get('/submit-words', [WordController::class, 'create']);
